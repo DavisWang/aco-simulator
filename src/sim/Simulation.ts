@@ -144,6 +144,8 @@ export class Simulation {
 
   placeColony(cx: number, cy: number): void {
     if (!this.inBounds(cx, cy)) return;
+    // No-op if the colony is already on this cell.
+    if (this.colony && this.colony.x === cx && this.colony.y === cy) return;
     // Clear any previous colony marker.
     if (this.colony) {
       this.cellType[this.index(this.colony.x, this.colony.y)] = CellType.Empty;
@@ -152,6 +154,8 @@ export class Simulation {
     this.cellType[this.index(cx, cy)] = CellType.Colony;
     this.layoutDirty = true;
     this.homeField = null;
+    // Respawn ants at the new colony so none are left stranded at the old spot.
+    this.ants = [];
     this.syncAntCount();
   }
 
